@@ -21,10 +21,12 @@ class Texter():
     font_file = ARIAL_FONT_FILE
 
     padding = { 'left': 50, 'right': 50, 'top': 50, 'bottom': 50 }
+    paragraph_margin = 5
 
-    use_shadow = True
+    use_shadow = False
     shadow_color = (72, 72, 72)
     shadow_margins = (-2, 2)
+
 
     def __init__(self, **kwargs):
         self.set_config(**kwargs)
@@ -38,20 +40,22 @@ class Texter():
 
     def draw_text_in_box(self, string, draw, box_coord, box_size, y_start=0):
         y_position = box_coord[1] + y_start
-        words = string.split(' ')
-        deffered = []
+        words = []
+        deffered = string.split(' ')
+        deffered.reverse()
         f = ImageFont.truetype(self.font_file, self.font_size)
-        while words or deffered: # TODO: slow speed algorithm
-            while f.getsize(' '.join(words))[0] > box_size[0] and len(words) > 1:
+        while words or deffered:
+            while f.getsize(' '.join(words))[0] < box_size[0] and deffered:
+                words.append(deffered.pop())
+            if f.getsize(' '.join(words))[0] > box_size[0] and len(words) > 1:
                 deffered.append(words.pop())
             # drawing single line of text
             self.draw_text_line(' '.join(words), draw, (box_coord[0], y_position), box_size[0], f)
             y_position += f.getsize(' '.join(words))[1]
-            deffered.reverse()
-            words = deffered
-            deffered = []
+            words = []
             if y_position > box_coord[1] + box_size[1]:
-                return ' '.join(words), 0
+                deffered.reverse()
+                return ' '.join(deffered), 0
 
         return '', y_position < box_coord[1] + box_size[1] and y_position - box_coord[1]
 
@@ -74,14 +78,13 @@ class Texter():
         paragraphs = text.splitlines()
         paragraphs.reverse()
         cur_paragraph = ''
-
-        while paragraphs:
+        while paragraphs or cur_paragraph:
             page = Image.new("RGB", canvas_size)
             draw = ImageDraw.Draw(page)
             if self.fill_color:
                 draw.rectangle([(0, 0), canvas_size], fill=self.fill_color)
             y_start = 1
-            while (y_start and paragraphs):
+            while y_start and (paragraphs or not paragraphs and cur_paragraph):
                 cur_paragraph = cur_paragraph or ' ' * self.paragraph_indent + paragraphs.pop()
                 cur_paragraph, y_start = self.draw_text_in_box(
                     cur_paragraph,
@@ -91,7 +94,7 @@ class Texter():
                      canvas_size[1] - self.padding['bottom'] - self.padding['top']),
                     y_start
                 )
-                y_start = y_start and y_start + 5
+                y_start = y_start and y_start + self.paragraph_margin
             del draw
             pages.append(page)
         return pages
