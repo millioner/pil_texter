@@ -12,7 +12,7 @@ import texter
 
 class TestChapterDraw(unittest.TestCase):
 
-    def test_shuffle(self):
+    def test_chapter(self):
         dirname = os.path.join(os.path.dirname(__file__), 'output')
         f = open(os.path.join(os.path.dirname(__file__), 'lorem_ipsum.txt'), 'r')
         tt = texter.Texter(fill_color='white', font_size=16)

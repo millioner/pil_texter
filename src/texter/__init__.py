@@ -14,7 +14,7 @@ ARIAL_FONT_FILE = os.path.join(os.path.dirname(__file__), 'fonts', 'free_sans.tt
 class Texter():
 
     text_align = DRAW_ALIGN_LEFT
-    font_color = '000000'
+    font_color = (0, 0, 0)
     font_size = 15
     fill_color = False
     paragraph_indent = 6
@@ -71,9 +71,13 @@ class Texter():
                 x = coords[0]
         if self.use_shadow:
             self.draw_shadow(draw, font, string, x, coords[1])
-        draw.text((x, coords[1]), string, font=font, fill=int(self.font_color, 16))
+        draw.text((x, coords[1]), string, font=font, fill=self.font_color)
 
     def draw_chapter(self, text, canvas_size):
+        """
+        Draws large text chapter with paragraphs to multiply pages
+
+        """
         pages = []
         paragraphs = text.splitlines()
         paragraphs.reverse()
@@ -98,3 +102,31 @@ class Texter():
             del draw
             pages.append(page)
         return pages
+
+    def rect_text(self, image, rect, text):
+        """
+         Allows to draw text in an rectangle area
+         *image* - Image instance
+         *rect* - the 4-tuple that defines a region, where coordinates are (left, upper, right, lower)
+         *text* - a string to draw it in the box
+
+          Font size will be calculated automaticly
+        """
+        draw = ImageDraw.Draw(image)
+
+        font_size = 1
+        f = ImageFont.truetype(self.font_file, font_size)
+        width = rect[2] - rect[0]
+        height = rect[3] - rect[1]
+        while f.getsize(text)[0] < width and f.getsize(text)[1] < height:
+            font_size += 1
+            f = ImageFont.truetype(self.font_file, font_size)
+        if f.getsize(text)[0] > width or f.getsize(text)[1] > height:
+            font_size -= 1
+            f = ImageFont.truetype(self.font_file, font_size)
+
+        x = rect[0] + (width - f.getsize(text)[0]) / 2
+        y = rect[1] + (height - f.getsize(text)[1]) / 2
+        self.draw_shadow(draw, f, text, x, y)
+        draw.text((x, y), text, font=f, fill=self.font_color)
+        del draw
