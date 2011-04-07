@@ -5,10 +5,11 @@ import os
 
 import sys
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-
-
-import texter
+try:
+    import texter
+except ImportError:
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+    import texter
 
 class TestChapterDraw(unittest.TestCase):
 

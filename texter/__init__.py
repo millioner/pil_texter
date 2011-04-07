@@ -25,7 +25,7 @@ class Texter():
 
     use_shadow = False
     shadow_color = (72, 72, 72)
-    shadow_margins = (-2, 2)
+    shadow_offsets = (-2, 2)
 
 
     def __init__(self, **kwargs):
@@ -36,9 +36,16 @@ class Texter():
             setattr(self, key, value)
 
     def draw_shadow(self, draw, f, string, x, y):
-        draw.text((x + self.shadow_margins[0], y + self.shadow_margins[1]), string, font=f, fill=self.shadow_color)
+        """
+        Drawing shadow for text
+        Called before text drawing
+        """
+        draw.text((x + self.shadow_offsets[0], y + self.shadow_offsets[1]), string, font=f, fill=self.shadow_color)
 
     def draw_text_in_box(self, string, draw, box_coord, box_size, y_start=0):
+        """
+        Draws text in the
+        """
         y_position = box_coord[1] + y_start
         words = []
         deffered = string.split(' ')

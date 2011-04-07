@@ -6,10 +6,12 @@ import Image
 
 import sys
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+try:
+    import texter
+except ImportError:
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+    import texter
 
-
-import texter
 
 class TestRectTextDraw(unittest.TestCase):
 
