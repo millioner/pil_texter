@@ -127,6 +127,7 @@ class Texter():
 
         x = rect[0] + (width - f.getsize(text)[0]) / 2
         y = rect[1] + (height - f.getsize(text)[1]) / 2
-        self.draw_shadow(draw, f, text, x, y)
+        if self.use_shadow:
+            self.draw_shadow(draw, f, text, x, y)
         draw.text((x, y), text, font=f, fill=self.font_color)
         del draw
