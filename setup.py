@@ -8,7 +8,7 @@ setup(
     name="pil_texter",
     version=0.1,
     description="A small module for drawing text with PIL",
-    long_description=open("README").read(),
+    long_description=open("README.md").read(),
     author="Millioner",
     author_email="millioner.bbb@gmail.com",
     url="https://github.com/millioner/pil_texter",
