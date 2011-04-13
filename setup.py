@@ -1,7 +1,6 @@
 from distutils.core import setup, find_packages
 
 install_requires = [
-    'setuptools',
     'PIL',
 ]
 
